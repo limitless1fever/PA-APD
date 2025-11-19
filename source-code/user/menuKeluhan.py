@@ -12,11 +12,22 @@ def buat_laporan_keluhan():
     print("=" * 75)
     input("Tekan Enter untuk kembali...")
 
+# fungsi liat laporan keluhan yang udah dibuat
 def lihat_laporan_keluhan():
     clear()
     print("=" * 75)
     print("LAPORAN KELUHAN YANG TELAH DIBUAT")
     print("=" * 75)
+
+    if len(laporan_keluhan) == 0:
+        print("Belum ada laporan keluhan.")
+    else:
+        for i in range(len(laporan_keluhan)):
+            print(f"[{i + 1}]")
+            print("  Dari     :", laporan_keluhan[i]["oleh"])
+            print("  Keluhan  :", laporan_keluhan[i]["keluhan"])
+            print("  Status   :", laporan_keluhan[i]["status"])
+            print("-" * 75)
     input("Tekan Enter untuk kembali...")
 
 def hapus_laporan_keluhan():
