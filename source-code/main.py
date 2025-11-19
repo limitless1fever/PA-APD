@@ -1,7 +1,11 @@
 import os
 import time
+import fungsi
+import admin
+
 from auth import register, login
-from utilitas import clear
+from fungsi.utilitas import clear
+from admin.menuAdmin import debug
 
 # KODE MAIN
 while True:
@@ -35,6 +39,9 @@ while True:
 
         elif pilih_menu == "2": 
             register()
+        
+        elif pilih_menu == "3": 
+            debug()
 
         else: 
              raise ValueError("Pilihan Tidak Valid")

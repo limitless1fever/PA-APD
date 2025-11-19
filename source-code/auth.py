@@ -1,4 +1,5 @@
-from utilitas import clear
+import fungsi
+from fungsi.utilitas import clear
 
 user_login = None
 user = {              

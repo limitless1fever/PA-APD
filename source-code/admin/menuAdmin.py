@@ -1,9 +1,7 @@
-import time
-import os
+import fungsi
+from fungsi.utilitas import clear
 
 # Menu Admin
-
-def clear(): 
-    time.sleep(0.5)
-    os.system("clear")
-    os.system("cls")
+def debug(): 
+    print("Hello")
+    clear()
