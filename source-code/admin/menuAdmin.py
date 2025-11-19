@@ -1,6 +1,8 @@
 import fungsi
 from fungsi.utilitas import clear
 
+import auth
+
 import admin
 from admin.akunPenyewa import akunPenyewa
 from admin.operasional import operasional
@@ -12,7 +14,7 @@ def menuAdmin():
             clear()
 
             print("=" * 75)
-            print("Selamat datang kembali, 'nama_admin'")
+            print("Selamat datang kembali,", auth.user_login)
             print("=" * 75)
 
             print("[1] - Data dan Akun Penyewa")

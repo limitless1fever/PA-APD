@@ -2,6 +2,7 @@ import os
 import time
 import fungsi
 import admin
+import auth
 
 from auth import register, login
 from fungsi.utilitas import clear
@@ -44,6 +45,12 @@ while True:
 
         if pilih_menu == "1": 
             login()
+            if auth.role_login == "ADMIN": 
+                print("Anda Login sebagai Admin")
+                menuAdmin()
+            else: 
+                print("Anda Login sebagai Member")
+
         elif pilih_menu == "2": 
             register()
         elif pilih_menu == "3": 

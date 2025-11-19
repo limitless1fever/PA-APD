@@ -1,4 +1,6 @@
 import fungsi
+from akun import daftarAkun
+
 from fungsi.utilitas import clear
 
 user_login = None
@@ -6,36 +8,29 @@ user = {
     "admin": "admin123"
 }
 
-# === IZIN INI MAU DIHAPUS ===
-# def clear():
-#     os.system('cls' if os.name == 'nt' else 'clear')
-
-# def menu_login():
-#     clear()
-#     print("=== SELAMAT DATANG ===")
-#     print("1. Login")
-#     print("2. Register")
-#     print("3. Keluar")
-
 def login():
-    global user_login
-    clear()
-    print("=== LOGIN ===")
-    username = input("Username: ").strip()
-    password = input("Password: ").strip()
+    while True: 
+        global user_login, role_login, id_login
+        berhasil_login = False
+        clear()
+        print("=== LOGIN ===")
+        username = input("Username: ").strip()
+        password = input("Password: ").strip()
 
-    if username in user and user[username] == password:
-        user_login = username
-        if username == "admin":
-            print("Anda login sebagai Admin")
-            clear()
-        else:
-            print("Login berhasil!")
-            clear()
-        return True
-    else:
-        print("Username atau password salah!")
-        return False
+        for id_akun, info in daftarAkun.items(): 
+            if username == info['username'] and password == info['password']:
+                user_login = username
+                role_login = info['role']
+                id_login = id_akun
+                berhasil_login = True
+
+                print("Login Berhasil")
+                clear()
+
+        if berhasil_login == True: 
+            break
+        else: 
+            print("Login gagal, silahkan coba lagi!")
 
 def register():
     clear()
@@ -63,44 +58,3 @@ def logout():
     global user_login
     user_login = None
     print("Berhasil logout.")
-
-# === IZIN INI MAU DIHAPUS ===
-
-# Buat ngecek jalan apa tidak fiturnya
-# while True:
-#     menu_login()
-#     pilihan = input("Pilih menu: ")
-
-#     if pilihan == "1":
-#         if login():
-#             #hak admin
-#             if user_login == "admin":
-#                 while True:
-#                     clear()
-#                     print("=== MENU ADMIN ===")
-#                     print("1. Logout")
-#                     admin_pilihan = input("Pilih: ")
-
-#                     if admin_pilihan == "1":
-#                         logout()
-#                         break
-#                     else:
-#                         print("Pilihan tidak valid!")
-#                         input("\nTekan Enter untuk lanjut...")
-#             #hak kroco
-#             else:
-#                 print(f"Selamat datang, {user_login}!")
-#                 input("\nTekan Enter untuk logout...")
-#                 logout()
-
-#     elif pilihan == "2":
-#         register()
-#         input("\nTekan Enter untuk lanjut...")
-
-#     elif pilihan == "3":
-#         print("Anda telah keluar")
-#         break
-
-#     else:
-#         print("Pilihan tidak valid!")
-#         input("\nTekan Enter untuk lanjut...")
