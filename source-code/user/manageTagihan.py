@@ -25,9 +25,12 @@ def lihat_tagihan_mendatang():
     
     # ini buat dibuat kayak struk kebawah atau tetap ke samping kasih tau aja
     ada_tagihan = False
-    for bulan, data in tagihan.items():
-        if data["status"] == "Belum Bayar":
-            print(f"Bulan: {bulan} | Jumlah: Rp{data['jumlah']:,} | Status: {data['status']}")
+    for i in range(len(tagihan)):
+        if tagihan[i]["status"] == "Belum Bayar":
+            print("Bulan     :", tagihan[i]["bulan"])
+            print("Jumlah    : Rp", tagihan[i]["jumlah"])
+            print("Status    :", tagihan[i]["status"])
+            print("-" * 75)
             ada_tagihan = True
     
     if not ada_tagihan:
