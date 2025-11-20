@@ -1,9 +1,11 @@
 import fungsi
+import user
+
 from fungsi.utilitas import clear
 
-from manageTagihan import kelolaTagihan
-from kelolaAkun import kelolaAkun
-from menuKeluhan import keluhan
+from user.manageTagihan import kelolaTagihan
+from user.kelolaAkun import kelolaAkun
+from user.menuKeluhan import keluhan
 
 # Menu User
 def menuUser():

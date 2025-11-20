@@ -47,7 +47,15 @@ def register():
         print("Username sudah digunakan!")
         return False
 
-    user[username] = password
+    id_akun = f"acc{len(daftarAkun) + 1}"
+
+    daftarAkun[id_akun] = {
+        "username": username, 
+        "password": password, 
+        "role": "MEMBER"
+    }
+
+    # user[username] = password
     print("Akun berhasil dibuat! Silakan login.")
 
     clear()

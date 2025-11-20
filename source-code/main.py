@@ -3,10 +3,12 @@ import time
 import fungsi
 import admin
 import auth
+import user
 
 from auth import register, login
 from fungsi.utilitas import clear
 from admin.menuAdmin import menuAdmin
+from user.menuUser import menuUser
 
 def menu_debug(): 
     print("Pilih menu yang anda inginkan")
@@ -50,6 +52,7 @@ while True:
                 menuAdmin()
             else: 
                 print("Anda Login sebagai Member")
+                menuUser()
 
         elif pilih_menu == "2": 
             register()
