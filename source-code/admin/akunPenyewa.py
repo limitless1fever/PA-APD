@@ -33,12 +33,43 @@ def tambahPenyewa():
     tanggal_gabung = input(f"{'Tanggal Gabung (contoh: 27 November 2025)':<40}: ").strip()
     kamar = input(f"{'Nomor Kamar':<40}: ").strip()
 
-    if not all([nama, kontak, email, tanggal_gabung, kamar]):
+    # Validasi nama, email, tanggal, kamar
+    if not all([nama, email, tanggal_gabung, kamar]):
         print("\nSemua data wajib diisi!")
         input("Tekan Enter untuk kembali...")
         return False
 
-    # hitung hanya penyewa (abaikan admin)
+    # Validasi kontak (nomor HP)
+    if not kontak:
+        print("\nNomor kontak tidak boleh kosong!")
+        input("Tekan Enter untuk kembali...")
+        return False
+
+    # Bersihkan kontak dari spasi dan tanda hubung
+    kontak_bersih = kontak.replace(" ", "").replace("-", "")
+
+    # Cek apakah hanya berisi angka
+    if not kontak_bersih.isdigit():
+        print("\nNomor kontak hanya boleh berisi angka, spasi, atau tanda hubung!")
+        input("Tekan Enter untuk kembali...")
+        return False
+
+    # Cek panjang (10-12 digit)
+    if len(kontak_bersih) < 10 or len(kontak_bersih) > 12:
+        print("\nNomor kontak harus terdiri dari 10-12 digit angka!")
+        input("Tekan Enter untuk kembali...")
+        return False
+
+    # Cek awalan "08"
+    if not kontak_bersih.startswith("08"):
+        print("\nNomor kontak harus diawali dengan '08'!")
+        input("Tekan Enter untuk kembali...")
+        return False
+
+    # Jika lolos semua validasi, gunakan versi bersih
+    kontak_akhir = kontak_bersih
+
+    # Hitung hanya penyewa (abaikan admin)
     jumlah_penyewa = sum(1 for data in dataPenyewa.values() if data.get("role") == "MEMBER")
     id_baru = f"PENYEWA{jumlah_penyewa + 1}"
 
@@ -48,19 +79,19 @@ def tambahPenyewa():
         "password": password,
         "role": "MEMBER",
         "nama": nama,
-        "kontak": kontak,
+        "kontak": kontak_akhir,
         "email": email,
         "tanggal_gabung": tanggal_gabung,
         "status": "AKTIF",
         "kamar": kamar
     }
 
-    # menambahkan data baru ke dict
+    # Menambahkan data baru ke dict pendukung
     tagihan[id_baru] = {}
     laporan_keluhan[id_baru] = {}
     laporan_bayar[id_baru] = {}
 
-    #Perbarui dataUser jika digunakan
+    # Perbarui dataUser jika digunakan
     if 'dataUser' in globals():
         dataUser[id_baru] = {
             "akun": dataPenyewa[id_baru],
@@ -210,14 +241,38 @@ def editPenyewa():
                         print("=" * 75)
                         print(f"{'Kontak Lama':<30} : {info_penyewa.get('kontak', '-')}")
                         ganti_kontak = input(f"{'Masukkan kontak baru':<30} : ").strip()
-                        if ganti_kontak:
-                            dataPenyewa[pilih_menu]["kontak"] = ganti_kontak
-                            print("Kontak berhasil diubah!")
-                            input("Tekan Enter untuk lanjut...")
-                            break
-                        else: 
+                        
+                        if not ganti_kontak:
                             print("\nKontak tidak boleh kosong!")
                             input("Tekan Enter untuk ulang...")
+                            continue
+
+                        # Bersihkan dari spasi dan tanda hubung
+                        kontak_bersih = ganti_kontak.replace(" ", "").replace("-", "")
+
+                        # Validasi: hanya angka
+                        if not kontak_bersih.isdigit():
+                            print("\nKontak hanya boleh berisi angka, spasi, atau tanda hubung!")
+                            input("Tekan Enter untuk ulang...")
+                            continue
+
+                        # Validasi: panjang 10-12 digit
+                        if len(kontak_bersih) < 10 or len(kontak_bersih) > 12:
+                            print("\nKontak harus terdiri dari 10-12 digit angka!")
+                            input("Tekan Enter untuk ulang...")
+                            continue
+
+                        # Validasi: diawali "08"
+                        if not kontak_bersih.startswith("08"):
+                            print("\nKontak harus diawali dengan '08'!")
+                            input("Tekan Enter untuk ulang...")
+                            continue
+
+                        # Jika lolos semua validasi, simpan versi bersih
+                        dataPenyewa[pilih_menu]["kontak"] = kontak_bersih
+                        print("Kontak berhasil diubah!")
+                        input("Tekan Enter untuk lanjut...")
+                        break
 
                 elif pilih_edit == "3": 
                     while True: 
