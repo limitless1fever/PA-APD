@@ -1,4 +1,5 @@
-from akun import dataPenyewa, laporan_keluhan
+from akun import dataUser
+import auth
 from fungsi.utilitas import clear
 
 # tempat nyimpan sementara aku masih belum tau mau dipakai buat apa
@@ -23,113 +24,194 @@ def deskripsi_laporan(prompt, end_keyword="SELESAI"):
 
     return hasil
 
-
-# function fitur masih kosong
 def buat_laporan_keluhan():
     clear()
-    # print("=" * 75)
     print("BUAT LAPORAN KELUHAN")
-    print("=" * 75)
+    print("=" * 50)
 
-    pilih_id = input("Masukkan ID Penyewa : ")
+    pilih_id = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
+    print()
 
-    for id_penyewa, info_penyewa in dataPenyewa.items():
-        if pilih_id == id_penyewa: 
-            nama_laporan = info_penyewa['nama']
-            unit_laporan = info_penyewa['unit']
-            kamar_laporan = info_penyewa['kamar']
+    # Cek apakah ID ada di dataUser
+    if pilih_id not in dataUser:
+        print("ID Penyewa tidak ditemukan!")
+        input("Tekan Enter untuk kembali...")
+        return
 
-            print("Nama Penyewa :", nama_laporan)
-            print("Unit :", unit_laporan)
-            print("Kamar :", kamar_laporan)
-            print("")
+    user = dataUser[pilih_id]
+    akun = user["akun"]
 
-            tanggal_laporan = input("Masukkan Tanggal dibuat : ")
-            print("KATEGORI LAPORAN")
-            print("[1] - Fasilitas Rusak")
-            print("[2] - Kebersihan")
-            print("[3] - Keamanan")
-            print("[4] - Gangguan")
-            print("[5] - Lainnya")
+    # Pastikan ini penyewa
+    if akun["role"] != "MEMBER":
+        print("Hanya penyewa yang dapat membuat laporan keluhan.")
+        input("Tekan Enter untuk kembali...")
+        return
 
-            print("Masukkan Kategori laporan anda : ")
-            pilih_menu = input("> ")
+    nama_laporan = akun["nama"]
+    kamar_laporan = akun["kamar"]
 
-            if pilih_menu == "1": 
-                kategori_laporan = "Fasilitas Rusak"
-            elif pilih_menu == "2": 
-                kategori_laporan = "Kebersihan"
-            elif pilih_menu == "3": 
-                kategori_laporan = "Keamanan"
-            elif pilih_menu == "4": 
-                kategori_laporan = "Gangguan Lingkungan"
-            elif pilih_menu == "5": 
-                kategori_laporan = "Lainnya"
-            else: 
-                print("Pilihan Tidak valid!")
+    print("Nama Penyewa :", nama_laporan)
+    print("Kamar        :", kamar_laporan)
+    print()
 
-            judul_laporan = input("Masukkan Judul Laporan : ")
-            deskripsi = deskripsi_laporan("Tulis deskripsi Keluhan:")
-            print("\nDeskripsi final:")
-            
-            for id_penyewa, data_laporan in laporan_keluhan.items(): 
-                print(laporan_keluhan)
-                if pilih_id == id_penyewa: 
-                    id_laporan = f"LK-{len(data_laporan) + 1}"
-                    break
+    tanggal_laporan = input("Masukkan Tanggal dibuat (contoh: 27 November 2025): ").strip()
+    print()
 
-            for id_penyewa, data_laporan in laporan_keluhan.items(): 
-                if id_penyewa == pilih_id: 
-                    print("BERHASIL")
-                    data_laporan[id_laporan] = {
-                        "nama": nama_laporan, 
-                        "unit": unit_laporan, 
-                        "kamar": kamar_laporan, 
-                        "kategori": kategori_laporan, 
-                        "judul_laporan": judul_laporan, 
-                        "deskripsi_laporan": deskripsi,
-                        "tanggal_dibuat": tanggal_laporan, 
-                        "status": "BELUM DITANGANI"
-                    }
-            
-            # laporan_keluhan.append(deskripsi)
-            # for i in laporan_keluhan: 
-            #     print(i)
-            print(laporan_keluhan)
-            unloading = laporan_keluhan["PENYEWA1"][id_laporan]["deskripsi_laporan"]
+    print("KATEGORI LAPORAN")
+    print("[1] Fasilitas Rusak")
+    print("[2] Kebersihan")
+    print("[3] Keamanan")
+    print("[4] Gangguan Lingkungan")
+    print("[5] Lainnya")
+    print()
 
-            print(unloading)
-            # for baris in unloading: 
-            #     print(baris)
+    pilih_menu = input("Masukkan Kategori laporan anda: ").strip()
 
-            # print(info_penyewa['nama']) 
+    kategori_laporan = ""
+    if pilih_menu == "1":
+        kategori_laporan = "Fasilitas Rusak"
+    elif pilih_menu == "2":
+        kategori_laporan = "Kebersihan"
+    elif pilih_menu == "3":
+        kategori_laporan = "Keamanan"
+    elif pilih_menu == "4":
+        kategori_laporan = "Gangguan Lingkungan"
+    elif pilih_menu == "5":
+        kategori_laporan = "Lainnya"
+    else:
+        print("Pilihan tidak valid!")
+        input("Tekan Enter untuk kembali...")
+        return
 
-    input("Tekan Enter untuk kembali...")
+    judul_laporan = input("Masukkan Judul Laporan: ").strip()
+    if not judul_laporan:
+        print("Judul tidak boleh kosong!")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    deskripsi = deskripsi_laporan("Tulis deskripsi keluhan:")
+
+    # Buat ID laporan baru
+    laporan_aktif = user["laporan_keluhan"]
+    id_laporan_baru = f"LK-{len(laporan_aktif) + 1}"
+
+    # Simpan laporan
+    laporan_aktif[id_laporan_baru] = {
+        "nama": nama_laporan,
+        "kamar": kamar_laporan,
+        "kategori": kategori_laporan,
+        "judul_laporan": judul_laporan,
+        "deskripsi_laporan": deskripsi,
+        "tanggal_dibuat": tanggal_laporan,
+        "status": "BELUM DITANGANI"
+    }
+
+    print("\nLaporan keluhan berhasil dibuat!")
+    print(f"ID Laporan: {id_laporan_baru}")
+    input("\nTekan Enter untuk kembali...")
 
 # fungsi liat laporan keluhan yang udah dibuat
 def lihat_laporan_keluhan():
     clear()
-    print("=" * 75)
     print("LAPORAN KELUHAN YANG TELAH DIBUAT")
-    print("=" * 75)
+    print("=" * 50)
 
-    if len(laporan_keluhan) == 0:
-        print("Belum ada laporan keluhan.")
+    id_login = auth.id_login
+
+    if id_login not in dataUser:
+        print("Error: Pengguna tidak ditemukan.")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    user = dataUser[id_login]
+    akun = user["akun"]
+
+    # Hanya penyewa yang punya laporan keluhan
+    if akun["role"] != "MEMBER":
+        print("Anda adalah admin. Tidak memiliki laporan keluhan.")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    laporan_dict = user["laporan_keluhan"]
+
+    if not laporan_dict:
+        print("Anda belum membuat laporan keluhan.")
     else:
-        for i in range(len(laporan_keluhan)):
-            print(f"[{i + 1}]")
-            print("  Dari     :", laporan_keluhan[i]["oleh"])
-            print("  Keluhan  :", laporan_keluhan[i]["keluhan"])
-            print("  Status   :", laporan_keluhan[i]["status"])
-            print("-" * 75)
-    input("Tekan Enter untuk kembali...")
+        for id_laporan, data in laporan_dict.items():
+            print(f"ID Laporan   : {id_laporan}")
+            print(f"Nama         : {data['nama']}")
+            print(f"Kamar        : {data['kamar']}")
+            print(f"Kategori     : {data['kategori']}")
+            print(f"Judul        : {data['judul_laporan']}")
+            print(f"Tanggal      : {data['tanggal_dibuat']}")
+            print(f"Status       : {data['status']}")
+            print("Deskripsi    :")
+            print(f"  {data['deskripsi_laporan']}")
+            print("-" * 50)
+
+    input("\nTekan Enter untuk kembali...")
 
 def hapus_laporan_keluhan():
     clear()
-    print("=" * 75)
     print("HAPUS LAPORAN KELUHAN")
-    print("=" * 75)
-    input("Tekan Enter untuk kembali...")
+    print("=" * 50)
+
+    id_login = auth.id_login
+
+    # Validasi pengguna
+    if id_login not in dataUser:
+        print("Error: Pengguna tidak ditemukan.")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    user = dataUser[id_login]
+    akun = user["akun"]
+
+    if akun["role"] != "MEMBER":
+        print("Hanya penyewa yang dapat menghapus laporan keluhan.")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    laporan_dict = user["laporan_keluhan"]
+
+    if not laporan_dict:
+        print("Anda belum memiliki laporan keluhan.")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    # Tampilkan daftar laporan
+    print("Daftar Laporan Anda:")
+    for id_laporan in laporan_dict:
+        print(f" - {id_laporan}: {laporan_dict[id_laporan]['judul_laporan']} "
+            f"({laporan_dict[id_laporan]['status']})")
+    print()
+
+    # Input ID laporan yang ingin dihapus
+    id_hapus = input("Masukkan ID Laporan yang ingin dihapus (contoh: LK-1): ").strip()
+
+    if id_hapus not in laporan_dict:
+        print("ID Laporan tidak ditemukan!")
+        input("Tekan Enter untuk kembali...")
+        return
+
+    # Tampilkan detail laporan yang akan dihapus
+    data_hapus = laporan_dict[id_hapus]
+    print(f"\nAnda akan menghapus laporan berikut:")
+    print(f"ID Laporan : {id_hapus}")
+    print(f"Judul      : {data_hapus['judul_laporan']}")
+    print(f"Status     : {data_hapus['status']}")
+    print(f"Kategori   : {data_hapus['kategori']}")
+    print()
+
+    # Konfirmasi
+    konfirmasi = input("Yakin ingin menghapus? (y/n): ").strip().lower()
+    if konfirmasi == "y":
+        del laporan_dict[id_hapus]
+        print("\nLaporan berhasil dihapus.")
+    else:
+        print("\nPenghapusan dibatalkan.")
+
+    input("\nTekan Enter untuk kembali...")
 
 def keluhan():
     while True:
