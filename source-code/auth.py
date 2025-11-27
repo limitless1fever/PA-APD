@@ -1,36 +1,35 @@
 import fungsi
-from akun import daftarAkun
+import akun
+from akun import dataPenyewa
 
 from fungsi.utilitas import clear
 
 user_login = None
-user = {              
-    "admin": "admin123"
-}
+
+# Variabel global untuk menyimpan info login
+user_login = None
+role_login = None
+id_login = None
 
 def login():
-    while True: 
-        global user_login, role_login, id_login
-        berhasil_login = False
+    global user_login, role_login, id_login
+    while True:
         clear()
         print("=== LOGIN ===")
         username = input("Username: ").strip()
         password = input("Password: ").strip()
 
-        for id_akun, info in daftarAkun.items(): 
+        for id_akun, info in dataPenyewa.items(): 
             if username == info['username'] and password == info['password']:
                 user_login = username
                 role_login = info['role']
                 id_login = id_akun
-                berhasil_login = True
-
-                print("Login Berhasil")
+                print("Login Berhasil!")
                 clear()
+                return  # keluar dari fungsi, bukan hanya loop
 
-        if berhasil_login == True: 
-            break
-        else: 
-            print("Login gagal, silahkan coba lagi!")
+        print("Login gagal, silakan coba lagi!")
+        input("Tekan Enter untuk lanjut...")
 
 def register():
     clear()
@@ -38,28 +37,38 @@ def register():
     username = input("Masukkan username: ").strip()
     password = input("Masukkan password: ").strip()
 
-# ini buat ngecek kosong atau ngga nya data login
     if not username or not password:
         print("Username dan password tidak boleh kosong!")
-        return False
-#ini buat kalau ada yang double username nya
-    if username in user:
-        print("Username sudah digunakan!")
-        return False
+        input("Tekan Enter untuk kembali...")
+        return
 
-    id_akun = f"acc{len(daftarAkun) + 1}"
+    # Cek apakah username sudah ada
+    for info in dataPenyewa.values():
+        if info["username"] == username:
+            print("Username sudah digunakan!")
+            input("Tekan Enter untuk kembali...")
+            return
 
-    daftarAkun[id_akun] = {
-        "username": username, 
-        "password": password, 
-        "role": "MEMBER"
+    # Buat ID akun baru
+    id_baru = f"acc{len(dataPenyewa) + 1}"
+
+    # Tambahkan akun baru (hanya dengan data dasar dulu)
+    dataPenyewa[id_baru] = {
+        "username": username,
+        "password": password,
+        "role": "MEMBER",
+        # Jika butuh, kamu bisa tambahkan field lain dengan nilai default
+        "nama": "",
+        "kontak": "",
+        "email": "",
+        "tanggal_gabung": "27 November 2025",
+        "status": "AKTIF",
+        "unit": "",
+        "kamar": ""
     }
 
-    # user[username] = password
     print("Akun berhasil dibuat! Silakan login.")
-
-    clear()
-    return True
+    input("Tekan Enter untuk kembali...")
 
 #ini biarin aja kah fitur logout nya dipisah atau nanti mau di gabung di function lain?
 def logout():
