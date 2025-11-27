@@ -1,16 +1,8 @@
 import auth
-from auth import register, login
+from auth import login
 from fungsi.utilitas import clear
 from admin.menuAdmin import menuAdmin
 from user.menuUser import menuUser
-
-def menu_debug(): 
-    print("Pilih menu yang anda inginkan")
-    print("1 - Debug MenuAdmin")
-
-    pilih = input("> ")
-    if pilih == "1": 
-        menuAdmin()
 
 # KODE MAIN
 while True:
@@ -22,7 +14,6 @@ while True:
         print("=" * 75)
 
         print("[1] - Login")
-        print("[2] - Register")
         print("=" * 75)
 
         print("[0] - Keluar")
@@ -47,11 +38,6 @@ while True:
             else: 
                 print("Anda Login sebagai Member")
                 menuUser()
-
-        elif pilih_menu == "2": 
-            register()
-        elif pilih_menu == "3": 
-            menu_debug()
         else: 
             raise ValueError("Pilihan Tidak Valid")
     
