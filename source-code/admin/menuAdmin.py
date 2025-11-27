@@ -14,7 +14,7 @@ def menuAdmin():
             print("=" * 75)
 
             print("[1] - Data dan Akun Penyewa")
-            print("[2] - Operasional Kos dan Kontrakan")
+            print("[2] - Operasional Kos")
             print("=" * 75)
 
             print("[0] - Keluar")
