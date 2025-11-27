@@ -1,5 +1,5 @@
 import auth
-from auth import register, login
+from auth import login
 from fungsi.utilitas import clear
 from admin.menuAdmin import menuAdmin
 from user.menuUser import menuUser
