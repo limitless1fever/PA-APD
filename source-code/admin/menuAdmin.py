@@ -1,9 +1,5 @@
-import fungsi
 from fungsi.utilitas import clear
-
 import auth
-
-import admin
 from admin.akunPenyewa import akunPenyewa
 from admin.operasional import operasional
 

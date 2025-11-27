@@ -1,13 +1,11 @@
 from akun import dataPenyewa
 from fungsi.utilitas import clear
 
-# === VARIABEL GLOBAL UNTUK MENYIMPAN SESI LOGIN ===
 user_login = None
 role_login = None
 id_login = None
 login_password = None
 nama_login = None
-
 
 def login():
     while True:
@@ -29,7 +27,7 @@ def login():
                 role_login = data_akun["role"]
                 id_login = user_id
 
-                # Ambil nama hanya jika penyewa
+                # cek apakah member
                 if data_akun["role"] == "MEMBER":
                     nama_login = data_akun["nama"]
                 else:
@@ -38,7 +36,7 @@ def login():
                 print("\nLogin berhasil!")
                 input("Tekan Enter untuk melanjutkan...")
                 clear()
-                return True  # Keluar dari fungsi
+                return True
 
         # Jika tidak ditemukan
         print("\nUsername atau password salah!")
@@ -53,6 +51,6 @@ def logout():
     id_login = None
     login_password = None
     nama_login = None
-    print("\n✅ Berhasil logout.")
+    print("\nBerhasil logout.")
     input("Tekan Enter untuk kembali...")
     clear()

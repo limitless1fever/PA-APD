@@ -2,13 +2,12 @@ from fungsi.utilitas import clear
 import auth
 from akun import dataUser
 
-
 def ubah_data_akun():
     clear()
     print("UBAH DATA AKUN")
     print("=" * 50)
 
-    id_login = auth.id_login
+    id_login = auth.id_login #menyimpan id user
     if id_login not in dataUser:
         print("Error: Pengguna tidak ditemukan.")
         input("Tekan Enter untuk kembali...")

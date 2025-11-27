@@ -7,7 +7,7 @@ def buatTagihan():
     print("BUAT TAGIHAN BULANAN")
     print("=" * 50)
 
-    # === 1. Input bulan dan tahun secara manual ===
+    # Input bulan dan tahun secara manual
     print("Masukkan periode tagihan:")
     bulan = input("Bulan (contoh: November): ").strip()
     tahun = input("Tahun (contoh: 2025): ").strip()
@@ -23,7 +23,7 @@ def buatTagihan():
         input("Tekan Enter untuk kembali...")
         return
 
-    # === 2. Pilih target penyewa ===
+    # Pilih penyewa
     print("\nPilih opsi:")
     print("[1] Buat tagihan untuk SEMUA penyewa aktif")
     print("[2] Buat tagihan untuk PENYEWA TERTENTU")
@@ -68,7 +68,7 @@ def buatTagihan():
         input("Tekan Enter untuk kembali...")
         return
 
-    # === 3. Input jumlah tagihan ===
+    # Input jumlah tagihan 
     try:
         jumlah_str = input("\nMasukkan jumlah tagihan (angka): ").strip()
         # Hapus titik/koma jika ada (misal: 1.500.000)
@@ -83,7 +83,7 @@ def buatTagihan():
         input("Tekan Enter untuk kembali...")
         return
 
-    # === 4. Buat tagihan untuk setiap target ===
+    # Buat tagihan untuk setiap penyewa
     periode = f"{bulan} {tahun}"
     tagihan_dibuat = 0
 
@@ -100,12 +100,12 @@ def buatTagihan():
                 break
 
         if sudah_ada:
-            print(f"⚠️  Tagihan untuk {target_penyewa[user_id]} pada {periode} sudah ada.")
+            print(f"Tagihan untuk {target_penyewa[user_id]} pada {periode} sudah ada.")
             continue
 
-        # Buat ID tagihan baru: TGHN01, TGHN02, ...
+        # Buat id tagihan baru: TGHN01, TGHN02, ...
         nomor = len(tagihan[user_id]) + 1
-        id_tagihan = f"TGHN{nomor:02d}"  # → TGHN01, TGHN02, dst.
+        id_tagihan = f"TGHN{nomor:02d}"
 
         # Simpan tagihan
         tagihan[user_id][id_tagihan] = {
@@ -116,7 +116,6 @@ def buatTagihan():
         }
         tagihan_dibuat += 1
 
-    # === 5. Selesai ===
     print(f"\nBerhasil membuat {tagihan_dibuat} tagihan untuk periode: {periode}")
     input("\nTekan Enter untuk kembali...")
 
@@ -125,40 +124,37 @@ def lihatKamar_kosong():
     print("DAFTAR KAMAR KOSONG")
     print("=" * 50)
 
-    # === 1. DEFINISI SEMUA KAMAR YANG TERSEDIA ===
-    # Kamu bisa sesuaikan ini sesuai kontrakanmu
-    SEMUA_KAMAR = [
+    semua_kamar = [
         "A1", "A2", "A3", "A4", "A5",
         "B1", "B2", "B3", "B4", "B5"
     ]
 
-    # === 2. KUMPULKAN KAMAR YANG SUDAH DITEMPATI ===
+    # cek kamar yang sudah di tempati
     kamar_terisi = set()
     for user_id, data in dataUser.items():
         if data["akun"]["role"] == "MEMBER":
             if data["akun"].get("status") == "AKTIF":
                 kamar = data["akun"].get("kamar", "").strip()
-                if kamar and kamar in SEMUA_KAMAR:
+                if kamar and kamar in semua_kamar:
                     kamar_terisi.add(kamar)
 
-    # === 3. HITUNG KAMAR KOSONG ===
-    kamar_kosong = [kamar for kamar in SEMUA_KAMAR if kamar not in kamar_terisi]
+    # hitung kamar kosong
+    kamar_kosong = [kamar for kamar in semua_kamar if kamar not in kamar_terisi]
 
-    # === 4. TAMPILKAN HASIL ===
-    print(f"Total kamar       : {len(SEMUA_KAMAR)}")
+    # tampilkan hasil
+    print(f"Total kamar       : {len(semua_kamar)}")
     print(f"Terisi            : {len(kamar_terisi)}")
     print(f"Kosong            : {len(kamar_kosong)}")
     print("-" * 50)
 
     if kamar_kosong:
         print("Daftar kamar kosong:")
-        # Tampilkan dalam format rapi (5 kolom)
         for i, kamar in enumerate(kamar_kosong, 1):
             print(f"{kamar:>4}", end="  ")
             if i % 5 == 0:  # ganti baris tiap 5 kamar
                 print()
         if len(kamar_kosong) % 5 != 0:
-            print()  # newline akhir
+            print()
     else:
         print("Semua kamar telah terisi!")
 
@@ -170,7 +166,7 @@ def lihatTagihan_lunas():
     print("LIHAT TAGIHAN PENYEWA")
     print("=" * 50)
 
-    # Ambil daftar semua PENYEWA (role == "MEMBER")
+    # Ambil daftar semua PENYEWA
     daftar_penyewa = {}
     for user_id, user_data in dataUser.items():
         if user_data["akun"]["role"] == "MEMBER":
@@ -258,7 +254,7 @@ def lihatKeluhan_penyewa():
         print(f"      {laporan['deskripsi_laporan']}")
         print("-" * 60)
 
-    # === OPSI UBAH STATUS ===
+    # opsi ubah status
     print("\nIngin mengubah status keluhan?")
     print("[y] Ya   [t] Tidak")
     pilih = input("> ").strip().lower()
@@ -290,7 +286,6 @@ def lihatKeluhan_penyewa():
     
     input("\nTekan Enter untuk kembali...")
 
-# Asli aku belum tambahin error handling nya baru logika utamanya jadi agak kurang 
 def editStatus():
     clear()
     print("UBAH STATUS TAGIHAN PENYEWA")
@@ -333,7 +328,7 @@ def editStatus():
         input("Tekan Enter untuk kembali...")
         return
 
-    # Cari ID tagihan
+    # Cari id tagihan
     id_target = next(
         id_tag for id_tag, data in tagihan_dict.items()
         if f"{data['bulan']} {data['tahun']}" == input_periode
@@ -345,7 +340,7 @@ def editStatus():
         input("Tekan Enter untuk kembali...")
         return
 
-    # KONFIRMASI
+    # konfirmasi
     while True:
         konfirmasi = input("Ubah status menjadi 'SUDAH BAYAR'? (y/n): ").strip().lower()
         if konfirmasi == "y":
@@ -365,7 +360,7 @@ def cetakLaporan():
     print("CETAK LAPORAN KEUANGAN")
     print("=" * 70)
 
-    # === 1. DAFTAR PENYEWA AKTIF ===
+    # daftar penyewa aktif
     print("\n1. DAFTAR PENYEWA AKTIF")
     print("-" * 50)
     penyewa_aktif = 0
@@ -381,7 +376,7 @@ def cetakLaporan():
     if penyewa_aktif == 0:
         print("– Tidak ada penyewa aktif.")
 
-    # === 2. TAGIHAN BELUM LUNAS ===
+    # tagihan yang belum lunas
     print("\n2. TAGIHAN BELUM LUNAS")
     print("-" * 50)
     tagihan_belum_lunas = 0
@@ -397,7 +392,7 @@ def cetakLaporan():
     if tagihan_belum_lunas == 0:
         print("– Semua tagihan telah lunas.")
 
-    # === 3. LAPORAN KELUHAN BELUM DITANGANI ===
+    # laporan keluhan yang belum ditangani
     print("\n3. LAPORAN KELUHAN BELUM DITANGANI")
     print("-" * 50)
     keluhan_terbuka = 0
@@ -413,10 +408,9 @@ def cetakLaporan():
     if keluhan_terbuka == 0:
         print("– Tidak ada keluhan yang perlu ditangani.")
 
-    # === PENUTUP ===
     print("\n" + "=" * 70)
     print("Laporan ini dicetak secara otomatis oleh sistem.")
-    print(f"Tanggal: Kamis, 27 November 2025")  # sesuaikan dengan datetime jika perlu
+    print(f"Tanggal: Kamis, 27 November 2025")  # pakai datetime?
     print("=" * 70)
 
     input("\nTekan Enter untuk kembali...")

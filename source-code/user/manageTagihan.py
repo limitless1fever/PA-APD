@@ -3,7 +3,6 @@ from fungsi.utilitas import clear
 import auth
 from akun import dataUser
 
-# Untuk Sementara Fungsi Fungsi nya Masih Kosong
 def buat_laporan_bayar():
     clear()
     print("=" * 75)
@@ -13,7 +12,7 @@ def buat_laporan_bayar():
     input_id = input("Masukkan ID Anda (contoh: PENYEWA1): ")
     print()
 
-    # Cek apakah ID ada di dataUser
+    # Cek apakah id ada di dataUser
     if input_id not in dataUser:
         print("ID tidak ditemukan!")
         input("Tekan Enter untuk kembali...")
@@ -89,13 +88,13 @@ def buat_laporan_bayar():
     # Metode pembayaran
     print("Metode Pembayaran")
     print("[1] CASH     [2] TRANSFER")
-    pilih_pembayaran = input("> ").strip()
+    pilih_pembayaran = input("> ")
     print()
 
     if pilih_pembayaran == "1":
-        info_pembayaran = ["CASH", input("Masukkan Nomor Nota: ").strip()]
+        info_pembayaran = ["CASH", input("Masukkan Nomor Nota: ")]
     elif pilih_pembayaran == "2":
-        info_pembayaran = ["TRANSFER", input("Masukkan Nomor Referensi: ").strip()]
+        info_pembayaran = ["TRANSFER", input("Masukkan Nomor Referensi: ")]
     else:
         print("Metode pembayaran tidak valid!")
         input("Tekan Enter untuk kembali...")
@@ -114,7 +113,7 @@ def buat_laporan_bayar():
         "metode_pembayaran": info_pembayaran,
     }
 
-    # UPDATE STATUS TAGIHAN (ini akan mengubah data asli karena referensi)
+    # Update status tagihan
     for id_tagihan in tagihan_dibayar_ids:
         user["tagihan"][id_tagihan]["status"] = "SUDAH BAYAR"
 
@@ -123,7 +122,7 @@ def buat_laporan_bayar():
     print("Status tagihan telah diperbarui.")
     input("Tekan Enter untuk melanjutkan...")
     clear()
-    
+
 def tampilkan_laporan_konfirmasi():
     clear()
     print("LAPORAN PEMBAYARAN")
@@ -132,7 +131,7 @@ def tampilkan_laporan_konfirmasi():
     id_input = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
     print()
 
-    # Cek apakah ID ada di dataUser
+    # Cek apakah id ada di dataUser
     if id_input not in dataUser:
         print("ID Penyewa tidak ditemukan!")
         input("Tekan Enter untuk kembali...")
@@ -154,7 +153,7 @@ def tampilkan_laporan_konfirmasi():
         input("Tekan Enter untuk kembali...")
         return
 
-    # Tampilkan daftar ID laporan
+    # Tampilkan daftar id laporan
     print("Daftar Laporan Pembayaran:")
     for id_laporan in laporan_bayar_penyewa.keys():
         print(f" - {id_laporan}")
@@ -185,13 +184,12 @@ def tampilkan_laporan_konfirmasi():
 
     input("\nTekan Enter untuk kembali...")
 
-# aku nambahin fungsi buat liat tagihan mendatang
 def lihat_tagihan_mendatang():
     clear()
     print("TAGIHAN YANG AKAN DATANG")
     print("=" * 50)
 
-    id_login = auth.id_login  # asumsi: ini berisi ID seperti "PENYEWA1"
+    id_login = auth.id_login #menyimpan id user
 
     if id_login not in dataUser:
         print("Error: Pengguna tidak ditemukan.")
@@ -230,7 +228,7 @@ def riwayat_pembayaran():
     print("RIWAYAT PEMBAYARAN")
     print("=" * 50)
 
-    id_login = auth.id_login  # contoh: "PENYEWA1"
+    id_login = auth.id_login #menyimpan id user
 
     if id_login not in dataUser:
         print("Error: Pengguna tidak ditemukan.")
@@ -272,7 +270,7 @@ def status_kontrakan():
     id_input = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
     print()
 
-    # Cek apakah ID ada di dataUser
+    # Cek apakah id ada di dataUser
     if id_input not in dataUser:
         print("ID Penyewa tidak ditemukan!")
         input("Tekan Enter untuk kembali...")
@@ -327,8 +325,6 @@ def status_kontrakan():
     konfir_hapus = input("> ").strip().lower()
 
     if konfir_hapus == "y":
-        # OPSIONAL: Kembalikan status tagihan ke "BELUM BAYAR"
-        # (Karena laporan dihapus = pembayaran dibatalkan)
         try:
             periode_list = laporan["periode"]
             tagihan_user = user["tagihan"]
@@ -337,7 +333,7 @@ def status_kontrakan():
                 if periode_tagihan in periode_list and data_tagihan["status"] == "SUDAH BAYAR":
                     data_tagihan["status"] = "BELUM BAYAR"
         except Exception as e:
-            # Jika gagal, abaikan (opsional)
+            # Jika gagal, abaikan
             pass
 
         # Hapus laporan

@@ -2,9 +2,6 @@ from akun import dataUser
 import auth
 from fungsi.utilitas import clear
 
-# tempat nyimpan sementara aku masih belum tau mau dipakai buat apa
-# laporan_keluhan = []
-
 def deskripsi_laporan(prompt, end_keyword="SELESAI"):
     print(f"{prompt}")
     print(f"(Ketik '{end_keyword}' di baris baru untuk selesai.)")
@@ -32,7 +29,7 @@ def buat_laporan_keluhan():
     pilih_id = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
     print()
 
-    # Cek apakah ID ada di dataUser
+    # Cek apakah ada penyewa di dataUser
     if pilih_id not in dataUser:
         print("ID Penyewa tidak ditemukan!")
         input("Tekan Enter untuk kembali...")
@@ -91,7 +88,7 @@ def buat_laporan_keluhan():
 
     deskripsi = deskripsi_laporan("Tulis deskripsi keluhan:")
 
-    # Buat ID laporan baru
+    # Buat id laporan baru
     laporan_aktif = user["laporan_keluhan"]
     id_laporan_baru = f"LK-{len(laporan_aktif) + 1}"
 
@@ -186,7 +183,7 @@ def hapus_laporan_keluhan():
             f"({laporan_dict[id_laporan]['status']})")
     print()
 
-    # Input ID laporan yang ingin dihapus
+    # Input id laporan yang ingin dihapus
     id_hapus = input("Masukkan ID Laporan yang ingin dihapus (contoh: LK-1): ").strip()
 
     if id_hapus not in laporan_dict:

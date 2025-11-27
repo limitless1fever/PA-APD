@@ -38,7 +38,7 @@ def tambahPenyewa():
         input("Tekan Enter untuk kembali...")
         return False
 
-    # ✅ HITUNG HANYA PENYEWA (abaikan admin)
+    # hitung hanya penyewa (abaikan admin)
     jumlah_penyewa = sum(1 for data in dataPenyewa.values() if data.get("role") == "MEMBER")
     id_baru = f"PENYEWA{jumlah_penyewa + 1}"
 
@@ -55,13 +55,12 @@ def tambahPenyewa():
         "kamar": kamar
     }
 
-    # ✅ WAJIB: Inisialisasi struktur data pendukung
-    # (agar tidak error saat login)
+    # menambahkan data baru ke dict
     tagihan[id_baru] = {}
     laporan_keluhan[id_baru] = {}
     laporan_bayar[id_baru] = {}
 
-    # ✅ Opsional: Perbarui dataUser jika digunakan
+    #Perbarui dataUser jika digunakan
     if 'dataUser' in globals():
         dataUser[id_baru] = {
             "akun": dataPenyewa[id_baru],
@@ -77,12 +76,11 @@ def tambahPenyewa():
     return True
 
 def lihatPenyewa(): 
-    clear()  # tambahkan ini agar tampilan rapi
+    clear()
     print("=" * 100)
     print("LIHAT DATA PENYEWA")
     print("=" * 100)
 
-    # Header tabel — HAPUS 'Unit' karena tidak ada di data
     print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
     print("-" * 100)
 
@@ -90,7 +88,6 @@ def lihatPenyewa():
     for id_penyewa, data in dataPenyewa.items(): 
         # HANYA tampilkan jika role == "MEMBER" (penyewa)
         if data.get("role") == "MEMBER":
-            # Gunakan .get() untuk antisipasi field kosong (opsional, tapi aman)
             nama = data.get("nama", "-")
             kontak = data.get("kontak", "-")
             tgl_gabung = data.get("tanggal_gabung", "-")
@@ -109,20 +106,18 @@ def lihatPenyewa():
 def editPenyewa(): 
     while True: 
         try: 
-            clear()  # tambahkan clear di awal agar rapi
+            clear()
             print("=" * 100)
             print("EDIT DATA PENYEWA")
             print("=" * 100)
 
-            # Header — HAPUS 'Unit'
             print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
             print("-" * 100)
 
             daftar_penyewa = []
             for id_penyewa, data in dataPenyewa.items():
-                # HANYA tampilkan PENYEWA
+                # hanya tampilkan PENYEWA
                 if data.get("role") == "MEMBER":
-                    # Gunakan .get() untuk antisipasi field kosong
                     nama = data.get("nama", "-")
                     kontak = data.get("kontak", "-")
                     tgl_gabung = data.get("tanggal_gabung", "-")
@@ -314,22 +309,22 @@ def hapusPenyewa():
                 continue
 
             # HAPUS dari semua struktur data
-            # 1. Hapus dari dataPenyewa
+            # Hapus dari dataPenyewa
             del dataPenyewa[pilih_id]
 
-            # 2. Hapus dari tagihan
+            # Hapus dari tagihan
             if pilih_id in tagihan:
                 del tagihan[pilih_id]
 
-            # 3. Hapus dari laporan_keluhan
+            # Hapus dari laporan_keluhan
             if pilih_id in laporan_keluhan:
                 del laporan_keluhan[pilih_id]
 
-            # 4. Hapus dari laporan_bayar
+            # Hapus dari laporan_bayar
             if pilih_id in laporan_bayar:
                 del laporan_bayar[pilih_id]
 
-            # 5. (Opsional) Jika pakai dataUser, hapus juga
+            # hapus dari dataUser
             if pilih_id in dataUser:
                 del dataUser[pilih_id]
 
@@ -339,7 +334,7 @@ def hapusPenyewa():
         except Exception as e:
             print(f"\nTerjadi kesalahan: {e}")
             input("Tekan Enter untuk lanjut...")
-        break  # keluar setelah satu operasi (sesuai UX umum)
+        break
 
 def akunPenyewa(): 
     while True: 
