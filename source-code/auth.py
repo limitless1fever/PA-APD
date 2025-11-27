@@ -1,29 +1,31 @@
 import fungsi
-from akun import dataPenyewa
+from akun import daftarAkun
 
 from fungsi.utilitas import clear
 
 user_login = None
+user = {              
+    "admin": "admin123"
+}
 
 def login():
     while True: 
-        global user_login, role_login, id_login, login_password, nama_login
+        global user_login, role_login, id_login
         berhasil_login = False
         clear()
         print("=== LOGIN ===")
         username = input("Username: ").strip()
         password = input("Password: ").strip()
 
-        for id_penyewa, info_penyewa in dataPenyewa.items(): 
-            if username == info_penyewa['username'] and password == info_penyewa['password']: 
+        for id_akun, info in daftarAkun.items(): 
+            if username == info['username'] and password == info['password']:
                 user_login = username
-                login_password = password
-                role_login = info_penyewa['role']
-                id_login = id_penyewa
+                role_login = info['role']
+                id_login = id_akun
                 berhasil_login = True
-                nama_login = info_penyewa['nama']
 
                 print("Login Berhasil")
+                clear()
 
         if berhasil_login == True: 
             break
@@ -40,26 +42,18 @@ def register():
     if not username or not password:
         print("Username dan password tidak boleh kosong!")
         return False
+#ini buat kalau ada yang double username nya
+    if username in user:
+        print("Username sudah digunakan!")
+        return False
 
-    id_penyewa = f"PENYEWA{len(dataPenyewa) + 1}"
+    id_akun = f"acc{len(daftarAkun) + 1}"
 
-    dataPenyewa[id_penyewa] = {
-    "username": username,
-    "password": password,
-    "role": "MEMBER",
-
-    # Data tambahan penyewa (isi dengan input atau default)
-    "nama": "",
-    "kontak": "",
-    "email": "",
-    "tanggal_gabung": "",
-    "status": "AKTIF",
-    "unit": "",
-    "kamar": ""
+    daftarAkun[id_akun] = {
+        "username": username, 
+        "password": password, 
+        "role": "MEMBER"
     }
-
-    print("Data penyewa berhasil ditambahkan!")
-    print(f"ID Penyewa: {id_penyewa}")
 
     # user[username] = password
     print("Akun berhasil dibuat! Silakan login.")

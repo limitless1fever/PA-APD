@@ -1,10 +1,4 @@
-import os
-import time
-import fungsi
-import admin
 import auth
-import user
-
 from auth import register, login
 from fungsi.utilitas import clear
 from admin.menuAdmin import menuAdmin
