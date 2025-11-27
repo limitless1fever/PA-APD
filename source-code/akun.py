@@ -1,7 +1,7 @@
 # KODE AKUN
 
 dataPenyewa = {
-    "PENYEWA1": {
+    "ADMIN": {
         "username": "admin1", 
         "password": "admin123", 
         "role": "ADMIN",
@@ -14,7 +14,7 @@ dataPenyewa = {
         "unit": "KS01", 
         "kamar": "A1"
         }, 
-    "PENYEWA2": {
+    "PENYEWA1": {
         "username": "user1", 
         "password": "user123", 
         "role": "MEMBER",
@@ -27,7 +27,7 @@ dataPenyewa = {
         "unit": "KS01", 
         "kamar": "A2"
     },
-    "PENYEWA3": {
+    "PENYEWA2": {
         "username": "user2", 
         "password": "user234", 
         "role": "MEMBER",
