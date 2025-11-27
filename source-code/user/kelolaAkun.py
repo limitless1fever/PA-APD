@@ -99,11 +99,22 @@ def ubah_data_pribadi():
         nohp_baru = input("Masukkan nomor telepon baru: ").strip()
         if not nohp_baru:
             print("Nomor telepon tidak boleh kosong!")
-        elif not nohp_baru.isdigit():
-            print("Nomor telepon hanya boleh berisi angka!")
         else:
-            akun["kontak"] = nohp_baru 
-            print("Nomor telepon berhasil diubah!")
+            # Bersihkan dari spasi dan tanda hubung
+            nohp_bersih = nohp_baru.replace(" ", "").replace("-", "")
+            
+            # Validasi: hanya angka
+            if not nohp_bersih.isdigit():
+                print("Nomor telepon hanya boleh berisi angka, spasi, atau tanda hubung!")
+            # Validasi: panjang 10-12 digit
+            elif len(nohp_bersih) < 10 or len(nohp_bersih) > 12:
+                print("Nomor telepon harus terdiri dari 10-12 digit angka!")
+            # Validasi: diawali "08"
+            elif not nohp_bersih.startswith("08"):
+                print("Nomor telepon harus diawali dengan '08'!")
+            else:
+                akun["kontak"] = nohp_bersih
+                print("Nomor telepon berhasil diubah!")
 
     elif pilih == "0":
         return
