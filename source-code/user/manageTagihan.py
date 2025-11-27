@@ -9,16 +9,14 @@ def buat_laporan_bayar():
     print("FORMULIR LAPORAN PEMBAYARAN")
     print("=" * 75)
 
-    input_id = input("Masukkan ID Anda (contoh: PENYEWA1): ")
-    print()
-
-    # Cek apakah id ada di dataUser
-    if input_id not in dataUser:
-        print("ID tidak ditemukan!")
+    # Ambil ID dari sesi login
+    id_login = auth.id_login
+    if id_login not in dataUser:
+        print("Error: Sesi login tidak valid.")
         input("Tekan Enter untuk kembali...")
         return
 
-    user = dataUser[input_id]
+    user = dataUser[id_login]
     akun = user["akun"]
 
     # Hanya penyewa (MEMBER) yang boleh buat laporan bayar
@@ -128,41 +126,44 @@ def tampilkan_laporan_konfirmasi():
     print("LAPORAN PEMBAYARAN")
     print("=" * 75)
 
-    id_input = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
-    print()
-
-    # Cek apakah id ada di dataUser
-    if id_input not in dataUser:
-        print("ID Penyewa tidak ditemukan!")
+    # Ambil ID dari sesi login
+    id_login = auth.id_login
+    if id_login not in dataUser:
+        print("Error: Sesi login tidak valid.")
         input("Tekan Enter untuk kembali...")
         return
 
-    user = dataUser[id_input]
+    user = dataUser[id_login]
     akun = user["akun"]
 
     # Pastikan ini penyewa
     if akun["role"] != "MEMBER":
-        print("ID tersebut milik admin. Tidak ada laporan pembayaran.")
+        print("Anda adalah admin. Tidak memiliki laporan pembayaran.")
         input("Tekan Enter untuk kembali...")
         return
 
     laporan_bayar_penyewa = user["laporan_bayar"]
 
     if not laporan_bayar_penyewa:
-        print("Penyewa ini belum memiliki laporan pembayaran.")
+        print("Anda belum memiliki laporan pembayaran.")
         input("Tekan Enter untuk kembali...")
         return
 
-    # Tampilkan daftar id laporan
-    print("Daftar Laporan Pembayaran:")
-    for id_laporan in laporan_bayar_penyewa.keys():
-        print(f" - {id_laporan}")
+    # Tampilkan daftar laporan dengan nomor urut
+    print("Daftar Laporan Pembayaran Anda:")
+    daftar_id = list(laporan_bayar_penyewa.keys())
+    for i, id_laporan in enumerate(daftar_id, start=1):
+        print(f"{i}. {id_laporan}")
 
     print()
-    pilih_key = input("Masukkan ID Laporan yang ingin dilihat: ").strip()
-
-    if pilih_key not in laporan_bayar_penyewa:
-        print("ID Laporan tidak ditemukan!")
+    pilih = input("Pilih nomor laporan: ").strip()
+    try:
+        nomor = int(pilih)
+        if nomor < 1 or nomor > len(daftar_id):
+            raise ValueError
+        pilih_key = daftar_id[nomor - 1]
+    except ValueError:
+        print("Nomor laporan tidak valid!")
         input("Tekan Enter untuk kembali...")
         return
 
@@ -172,7 +173,7 @@ def tampilkan_laporan_konfirmasi():
     print("\n" + "=" * 50)
     print("DETAIL LAPORAN PEMBAYARAN")
     print("=" * 50)
-    print(f"ID Penyewa         : {id_input}")
+    print(f"ID Penyewa         : {id_login}")
     print(f"Nama Penyewa       : {laporan['nama']}")
     print(f"Kamar              : {laporan['kamar']}")
     print(f"Jumlah Periode     : {laporan['jumlah_periode']} bulan")
@@ -181,7 +182,6 @@ def tampilkan_laporan_konfirmasi():
     print(f"Metode Pembayaran  : {laporan['metode_pembayaran'][0]}")
     print(f"Nomor Nota/Ref.    : {laporan['metode_pembayaran'][1]}")
     print("=" * 50)
-
     input("\nTekan Enter untuk kembali...")
 
 def lihat_tagihan_mendatang():
@@ -267,41 +267,44 @@ def status_kontrakan():
     print("STATUS KONTRAKAN")
     print("=" * 50)
 
-    id_input = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
-    print()
-
-    # Cek apakah id ada di dataUser
-    if id_input not in dataUser:
-        print("ID Penyewa tidak ditemukan!")
+    # Ambil ID dari sesi login
+    id_login = auth.id_login
+    if id_login not in dataUser:
+        print("Error: Sesi login tidak valid.")
         input("Tekan Enter untuk kembali...")
         return
 
-    user = dataUser[id_input]
+    user = dataUser[id_login]
     akun = user["akun"]
 
     # Hanya penyewa yang punya laporan pembayaran
     if akun["role"] != "MEMBER":
-        print("ID tersebut milik admin. Tidak memiliki laporan pembayaran.")
+        print("Anda adalah admin. Tidak memiliki laporan pembayaran.")
         input("Tekan Enter untuk kembali...")
         return
 
     laporan_bayar_penyewa = user["laporan_bayar"]
 
     if not laporan_bayar_penyewa:
-        print("Penyewa ini belum memiliki laporan pembayaran.")
+        print("Anda belum memiliki laporan pembayaran.")
         input("Tekan Enter untuk kembali...")
         return
 
-    # Tampilkan daftar laporan
-    print("Daftar Laporan Pembayaran:")
-    for id_laporan in laporan_bayar_penyewa.keys():
-        print(f" - {id_laporan}")
+    # Tampilkan daftar laporan dengan nomor urut
+    print("Daftar Laporan Pembayaran Anda:")
+    daftar_id = list(laporan_bayar_penyewa.keys())
+    for i, id_laporan in enumerate(daftar_id, start=1):
+        print(f"{i}. {id_laporan}")
+
     print()
-
-    pilih_key = input("Masukkan ID Laporan yang ingin dilihat: ").strip()
-
-    if pilih_key not in laporan_bayar_penyewa:
-        print("ID Laporan tidak ditemukan!")
+    pilih = input("Pilih nomor laporan: ").strip()
+    try:
+        nomor = int(pilih)
+        if nomor < 1 or nomor > len(daftar_id):
+            raise ValueError
+        pilih_key = daftar_id[nomor - 1]
+    except ValueError:
+        print("Nomor laporan tidak valid!")
         input("Tekan Enter untuk kembali...")
         return
 
@@ -310,7 +313,7 @@ def status_kontrakan():
     print("\n" + "=" * 50)
     print("DETAIL LAPORAN PEMBAYARAN")
     print("=" * 50)
-    print(f"ID Penyewa         : {id_input}")
+    print(f"ID Penyewa         : {id_login}")
     print(f"Nama Penyewa       : {laporan['nama']}")
     print(f"Kamar              : {laporan['kamar']}")
     print(f"Jumlah Periode     : {laporan['jumlah_periode']} bulan")
@@ -332,7 +335,7 @@ def status_kontrakan():
                 periode_tagihan = f"{data_tagihan['bulan']} {data_tagihan['tahun']}"
                 if periode_tagihan in periode_list and data_tagihan["status"] == "SUDAH BAYAR":
                     data_tagihan["status"] = "BELUM BAYAR"
-        except Exception as e:
+        except Exception:
             # Jika gagal, abaikan
             pass
 
@@ -340,7 +343,6 @@ def status_kontrakan():
         del laporan_bayar_penyewa[pilih_key]
         print("\nLaporan berhasil dihapus.")
         print("Status tagihan terkait telah dikembalikan ke 'BELUM BAYAR'.")
-
     input("\nTekan Enter untuk kembali...")
 
 # Menu Kelola Tagihan

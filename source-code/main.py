@@ -1,5 +1,4 @@
 import auth
-from auth import login
 from fungsi.utilitas import clear
 from admin.menuAdmin import menuAdmin
 from user.menuUser import menuUser
@@ -8,21 +7,15 @@ from user.menuUser import menuUser
 while True:
     try: 
         clear()
-
         print("=" * 75)
         print("SISTEM MANAJEMEN KOS")
         print("=" * 75)
-
         print("[1] - Login")
-        print("=" * 75)
-
         print("[0] - Keluar")
         print("=" * 75)
 
-        print("Pilih menu yang anda inginkan")
-        pilih_menu = input("> ")
-        print("=" * 75) 
-
+        pilih_menu = input("Pilih menu yang anda inginkan: ").strip()
+        print("=" * 75)
         clear()
 
         if pilih_menu == "0": 
@@ -30,14 +23,17 @@ while True:
             print("Terimakasih telah menggunakan program ini!")
             break
 
-        if pilih_menu == "1": 
-            login()
-            if auth.role_login == "ADMIN": 
-                print("Anda Login sebagai Admin")
-                menuAdmin()
-            else: 
-                print("Anda Login sebagai Member")
-                menuUser()
+        elif pilih_menu == "1": 
+            if auth.login():
+                if auth.role_login == "ADMIN": 
+                    print("Anda Login sebagai Admin")
+                    menuAdmin()
+                else: 
+                    print("Anda Login sebagai Member")
+                    menuUser()
+                # Logout otomatis setelah keluar dari menu
+                auth.logout()
+            # Jika login gagal (3x salah), langsung kembali ke menu utama
         else: 
             raise ValueError("Pilihan Tidak Valid")
     
@@ -45,5 +41,5 @@ while True:
         print("=" * 75)
         print(e)
         print("=" * 75)
+        input("Tekan Enter untuk lanjut...")
         clear()
-

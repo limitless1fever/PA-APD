@@ -81,24 +81,31 @@ def lihatPenyewa():
     print("LIHAT DATA PENYEWA")
     print("=" * 100)
 
-    print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
+    # Kumpulkan semua penyewa (role == "MEMBER")
+    daftar_penyewa = []
+    for id_penyewa, data in dataPenyewa.items():
+        if data.get("role") == "MEMBER":
+            daftar_penyewa.append((id_penyewa, data))
+
+    if not daftar_penyewa:
+        print("Belum ada penyewa terdaftar.")
+        print("=" * 100)
+        input("Tekan Enter untuk kembali... ")
+        return
+
+    print(f"{'No':<5} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
     print("-" * 100)
 
-    ada_penyewa = False
-    for id_penyewa, data in dataPenyewa.items(): 
-        # HANYA tampilkan jika role == "MEMBER" (penyewa)
-        if data.get("role") == "MEMBER":
-            nama = data.get("nama", "-")
-            kontak = data.get("kontak", "-")
-            tgl_gabung = data.get("tanggal_gabung", "-")
-            status = data.get("status", "-")
-            kamar = data.get("kamar", "-")
-
-            print(f"{id_penyewa:<15} {nama:<25} {kontak:<15} {tgl_gabung:<20} {status:<15} {kamar:<10}")
-            ada_penyewa = True
-
-    if not ada_penyewa:
-        print("Belum ada penyewa terdaftar.")
+    # Tampilkan data
+    for i in range(len(daftar_penyewa)):
+        id_penyewa, data = daftar_penyewa[i]
+        nama = data.get("nama", "-")
+        kontak = data.get("kontak", "-")
+        tgl_gabung = data.get("tanggal_gabung", "-")
+        status = data.get("status", "-")
+        kamar = data.get("kamar", "-")
+        
+        print(f"{i + 1:<5} {nama:<25} {kontak:<15} {tgl_gabung:<20} {status:<15} {kamar:<10}")
 
     print("=" * 100)
     input("Tekan Enter untuk kembali... ")
@@ -111,39 +118,47 @@ def editPenyewa():
             print("EDIT DATA PENYEWA")
             print("=" * 100)
 
-            print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
-            print("-" * 100)
-
+            # Kumpulkan semua penyewa (role == "MEMBER")
             daftar_penyewa = []
             for id_penyewa, data in dataPenyewa.items():
-                # hanya tampilkan PENYEWA
                 if data.get("role") == "MEMBER":
-                    nama = data.get("nama", "-")
-                    kontak = data.get("kontak", "-")
-                    tgl_gabung = data.get("tanggal_gabung", "-")
-                    status = data.get("status", "-")
-                    kamar = data.get("kamar", "-")
-                    
-                    print(f"{id_penyewa:<15} {nama:<25} {kontak:<15} {tgl_gabung:<20} {status:<15} {kamar:<10}")
-                    daftar_penyewa.append(id_penyewa)
+                    daftar_penyewa.append((id_penyewa, data))
 
             if not daftar_penyewa:
                 print("Tidak ada penyewa untuk diedit.")
                 input("Tekan Enter untuk kembali...")
                 break
 
+            # Tampilkan daftar
+            print(f"{'No':<5} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Kamar':<10}")
             print("-" * 100)
-            print(f"{'0':<15} Keluar")
+            for i in range(len(daftar_penyewa)):
+                id_penyewa, data = daftar_penyewa[i]
+                nama = data.get("nama", "-")
+                kontak = data.get("kontak", "-")
+                tgl_gabung = data.get("tanggal_gabung", "-")
+                status = data.get("status", "-")
+                kamar = data.get("kamar", "-")
+                print(f"{i + 1:<5} {nama:<25} {kontak:<15} {tgl_gabung:<20} {status:<15} {kamar:<10}")
+
+            print("-" * 100)
+            print("0. Keluar")
             print("=" * 100)
 
-            pilih_menu = input("Masukkan ID Penyewa yang ingin diubah: ").strip()
+            pilih = input("Pilih nomor penyewa yang ingin diubah: ").strip()
             print("=" * 100)
 
-            if pilih_menu == "0": 
+            if pilih == "0": 
                 break
 
-            if pilih_menu not in daftar_penyewa:
-                print("\nID Penyewa tidak valid!")
+            try:
+                nomor = int(pilih)
+                if nomor < 1 or nomor > len(daftar_penyewa):
+                    raise ValueError
+                # Ambil id asli berdasarkan nomor urut
+                pilih_menu = daftar_penyewa[nomor - 1][0]
+            except ValueError:
+                print("\nNomor tidak valid!")
                 input("Tekan Enter untuk lanjut...")
                 continue
 
@@ -261,74 +276,66 @@ def hapusPenyewa():
             print("HAPUS PENYEWA")
             print("=" * 100)
 
-            # Tampilkan hanya PENYEWA (bukan admin)
-            print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kamar':<10} {'Status':<15}")
-            print("-" * 100)
-
+            # Kumpulkan semua penyewa (role == "MEMBER")
             daftar_penyewa = []
             for id_penyewa, data in dataPenyewa.items():
                 if data.get("role") == "MEMBER":
-                    nama = data.get("nama", "-")
-                    kamar = data.get("kamar", "-")
-                    status = data.get("status", "-")
-                    print(f"{id_penyewa:<15} {nama:<25} {kamar:<10} {status:<15}")
-                    daftar_penyewa.append(id_penyewa)
+                    daftar_penyewa.append((id_penyewa, data))
 
             if not daftar_penyewa:
                 print("Tidak ada penyewa untuk dihapus.")
                 input("Tekan Enter untuk kembali...")
                 break
 
+            # Tampilkan dengan nomor urut 1, 2, 3, ... (sesuai urutan di dictionary)
+            print(f"{'No':<5} {'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kamar':<10} {'Status':<15}")
             print("-" * 100)
-            print(f"{'0':<5} Kembali")
+            for i in range(len(daftar_penyewa)):
+                id_penyewa, data = daftar_penyewa[i]
+                nama = data.get("nama", "-")
+                kamar = data.get("kamar", "-")
+                status = data.get("status", "-")
+                print(f"{i + 1:<5} {id_penyewa:<15} {nama:<25} {kamar:<10} {status:<15}")
+
+            print("-" * 100)
+            print("0. Kembali")
             print("=" * 100)
 
-            pilih_id = input("Masukkan ID Penyewa yang ingin dihapus: ").strip()
+            pilih = input("Pilih nomor penyewa yang ingin dihapus: ").strip()
 
-            if pilih_id == "0":
+            if pilih == "0":
                 break
 
-            if pilih_id not in daftar_penyewa:
-                print("\nID Penyewa tidak valid!")
+            try:
+                nomor = int(pilih)
+                if nomor < 1 or nomor > len(daftar_penyewa):
+                    raise ValueError
+                id_hapus = daftar_penyewa[nomor - 1][0]
+            except ValueError:
+                print("\nNomor tidak valid!")
                 input("Tekan Enter untuk lanjut...")
                 continue
 
-            # Tampilkan data yang akan dihapus
-            data_hapus = dataPenyewa[pilih_id]
-            print(f"\nAnda akan menghapus penyewa berikut:")
-            print(f"Nama   : {data_hapus.get('nama', '-')}")
-            print(f"Kamar  : {data_hapus.get('kamar', '-')}")
-            print(f"Status : {data_hapus.get('status', '-')}")
+            # Konfirmasi
+            data_hapus = dataPenyewa[id_hapus]
+            print(f"\nAnda akan menghapus:")
+            print(f"  ID    : {id_hapus}")
+            print(f"  Nama  : {data_hapus.get('nama', '-')}")
+            print(f"  Kamar : {data_hapus.get('kamar', '-')}")
             print()
 
-            # Konfirmasi wajib
-            konfirmasi = input("Yakin hapus? Semua data tagihan & laporan juga akan dihapus! (y/n): ").strip().lower()
+            konfirmasi = input("Yakin hapus? Semua data terkait juga akan dihapus! (y/n): ").strip().lower()
             if konfirmasi != "y":
                 print("Penghapusan dibatalkan.")
                 input("Tekan Enter untuk lanjut...")
                 continue
 
-            # HAPUS dari semua struktur data
-            # Hapus dari dataPenyewa
-            del dataPenyewa[pilih_id]
+            # Hapus dari semua struktur data
+            for dict_global in [dataPenyewa, tagihan, laporan_keluhan, laporan_bayar, dataUser]:
+                if id_hapus in dict_global:
+                    del dict_global[id_hapus]
 
-            # Hapus dari tagihan
-            if pilih_id in tagihan:
-                del tagihan[pilih_id]
-
-            # Hapus dari laporan_keluhan
-            if pilih_id in laporan_keluhan:
-                del laporan_keluhan[pilih_id]
-
-            # Hapus dari laporan_bayar
-            if pilih_id in laporan_bayar:
-                del laporan_bayar[pilih_id]
-
-            # hapus dari dataUser
-            if pilih_id in dataUser:
-                del dataUser[pilih_id]
-
-            print(f"\nPenyewa {pilih_id} berhasil dihapus beserta semua datanya.")
+            print(f"\nPenyewa {id_hapus} berhasil dihapus.")
             input("Tekan Enter untuk lanjut...")
 
         except Exception as e:

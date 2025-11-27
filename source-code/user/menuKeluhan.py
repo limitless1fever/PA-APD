@@ -26,16 +26,14 @@ def buat_laporan_keluhan():
     print("BUAT LAPORAN KELUHAN")
     print("=" * 50)
 
-    pilih_id = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
-    print()
-
-    # Cek apakah ada penyewa di dataUser
-    if pilih_id not in dataUser:
-        print("ID Penyewa tidak ditemukan!")
+    # Ambil ID dari sesi login
+    id_login = auth.id_login
+    if id_login not in dataUser:
+        print("Error: Sesi login tidak valid.")
         input("Tekan Enter untuk kembali...")
         return
 
-    user = dataUser[pilih_id]
+    user = dataUser[id_login]
     akun = user["akun"]
 
     # Pastikan ini penyewa

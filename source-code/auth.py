@@ -1,5 +1,6 @@
 from akun import dataPenyewa
 from fungsi.utilitas import clear
+import sys  # hanya jika ingin keluar paksa (opsional)
 
 user_login = None
 role_login = None
@@ -7,11 +8,17 @@ id_login = None
 login_password = None
 nama_login = None
 
+
 def login():
-    while True:
-        global user_login, role_login, id_login, login_password, nama_login
+    global user_login, role_login, id_login, login_password, nama_login
+    
+    max_percobaan = 3
+    percobaan = 0
+
+    while percobaan < max_percobaan:
         clear()
         print("=== LOGIN ===")
+        print(f"Sisa percobaan: {max_percobaan - percobaan}")
         username = input("Username: ").strip()
         password = input("Password: ").strip()
 
@@ -27,7 +34,6 @@ def login():
                 role_login = data_akun["role"]
                 id_login = user_id
 
-                # cek apakah member
                 if data_akun["role"] == "MEMBER":
                     nama_login = data_akun["nama"]
                 else:
@@ -36,12 +42,18 @@ def login():
                 print("\nLogin berhasil!")
                 input("Tekan Enter untuk melanjutkan...")
                 clear()
-                return True
+                return True  # sukses login
 
-        # Jika tidak ditemukan
-        print("\nUsername atau password salah!")
-        input("Tekan Enter untuk mengulang...")
-        clear()
+        # Jika sampai sini, login gagal
+        percobaan += 1
+        print(f"\nLogin gagal! Username atau password salah.")
+        if percobaan < max_percobaan:
+            input("Tekan Enter untuk mencoba lagi...")
+        else:
+            print("\nAnda telah melebihi batas percobaan login (3 kali).")
+            input("Tekan Enter untuk kembali ke menu utama...")
+            clear()
+            return False  # gagal login
 
 
 def logout():

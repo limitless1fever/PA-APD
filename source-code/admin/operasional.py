@@ -42,26 +42,33 @@ def buatTagihan():
             return
 
     elif pilih == "2":
-        # Tampilkan daftar penyewa aktif
-        print("\nDaftar Penyewa Aktif:")
-        penyewa_aktif = {}
+        # Tampilkan daftar penyewa aktif (hanya nama)
+        daftar_aktif = []
         for user_id, data in dataUser.items():
             if data["akun"]["role"] == "MEMBER" and data["akun"].get("status") == "AKTIF":
                 nama = data["akun"]["nama"]
-                penyewa_aktif[user_id] = nama
-                print(f"- {user_id} ({nama})")
+                daftar_aktif.append((user_id, nama))
 
-        if not penyewa_aktif:
+        if not daftar_aktif:
             print("Tidak ada penyewa aktif!")
             input("Tekan Enter untuk kembali...")
             return
 
-        user_id_pilih = input("\nMasukkan ID Penyewa: ").strip()
-        if user_id_pilih not in penyewa_aktif:
-            print("ID Penyewa tidak valid!")
+        print("\nDaftar Penyewa Aktif:")
+        for i, (user_id, nama) in enumerate(daftar_aktif, start=1):
+            print(f"{i}. {nama}")
+
+        pilih_aktif = input("\nPilih nomor penyewa: ").strip()
+        try:
+            nomor_aktif = int(pilih_aktif)
+            if nomor_aktif < 1 or nomor_aktif > len(daftar_aktif):
+                raise ValueError
+            user_id_pilih, nama_pilih = daftar_aktif[nomor_aktif - 1]
+            target_penyewa = {user_id_pilih: nama_pilih}
+        except ValueError:
+            print("Nomor tidak valid!")
             input("Tekan Enter untuk kembali...")
             return
-        target_penyewa = {user_id_pilih: penyewa_aktif[user_id_pilih]}
 
     else:
         print("Pilihan tidak valid!")
@@ -166,51 +173,48 @@ def lihatTagihan_lunas():
     print("LIHAT TAGIHAN PENYEWA")
     print("=" * 50)
 
-    # Ambil daftar semua PENYEWA
-    daftar_penyewa = {}
+    # Ambil daftar semua PENYEWA (role == "MEMBER")
+    daftar_penyewa = []
     for user_id, user_data in dataUser.items():
         if user_data["akun"]["role"] == "MEMBER":
-            daftar_penyewa[user_id] = user_data
+            daftar_penyewa.append((user_id, user_data["akun"]["nama"]))
 
     if not daftar_penyewa:
         print("Belum ada penyewa terdaftar.")
         input("Tekan Enter untuk kembali...")
         return
 
-    # Tampilkan daftar penyewa
     print("Daftar Penyewa:")
-    for user_id in daftar_penyewa:
-        nama = daftar_penyewa[user_id]["akun"]["nama"]
-        print(f"- {user_id} ({nama})")
+    for i, (user_id, nama) in enumerate(daftar_penyewa, start=1):
+        print(f"{i}. {nama}")
 
     print()
-    user_id_pilih = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
+    pilih = input("Pilih nomor penyewa: ").strip()
 
-    if not user_id_pilih:
-        print("ID tidak boleh kosong!")
-        input("Tekan Enter untuk kembali...")
-        return
-
-    if user_id_pilih not in daftar_penyewa:
-        print("ID Penyewa tidak ditemukan.")
-        print("Pastikan mengetik sesuai daftar di atas.")
+    # Validasi input nomor
+    try:
+        nomor = int(pilih)
+        if nomor < 1 or nomor > len(daftar_penyewa):
+            raise ValueError
+        user_id_pilih = daftar_penyewa[nomor - 1][0]  # Ambil id asli dari tuple(hanya sementara untuk menyimpan nama penyewa)
+    except ValueError:
+        print("Nomor tidak valid!")
         input("Tekan Enter untuk kembali...")
         return
 
     # Ambil tagihan penyewa
-    tagihan_user = daftar_penyewa[user_id_pilih]["tagihan"]
+    tagihan_user = dataUser[user_id_pilih]["tagihan"]
 
     if not tagihan_user:
-        print(f"Tidak ada tagihan untuk {user_id_pilih}.")
+        print(f"Tidak ada tagihan untuk {daftar_penyewa[nomor - 1][1]}.")
     else:
-        print(f"\nTagihan untuk {user_id_pilih}:")
+        print(f"\nTagihan untuk {daftar_penyewa[nomor - 1][1]}:")
         for id_tagihan, data in tagihan_user.items():
             bulan = data["bulan"]
             tahun = data["tahun"]
             jumlah = data["jumlah"]
             status = data["status"]
             print(f"- {id_tagihan} | {bulan} {tahun} | Rp{jumlah:,} | {status}")
-
     input("\nTekan Enter untuk kembali...")
 
 def lihatKeluhan_penyewa():
@@ -230,10 +234,14 @@ def lihatKeluhan_penyewa():
             for id_laporan, data in laporan_dict.items():
                 semua_laporan.append({
                     "id_penyewa": user_id,
+                    "id_laporan": id_laporan,
                     "nama": nama,
                     "kamar": kamar,
-                    "id_laporan": id_laporan,
-                    **data
+                    "kategori": data.get("kategori", "-"),
+                    "judul_laporan": data.get("judul_laporan", "-"),
+                    "status": data.get("status", "-"),
+                    "tanggal_dibuat": data.get("tanggal_dibuat", "-"),
+                    "deskripsi_laporan": data.get("deskripsi_laporan", "-")
                 })
 
     if not semua_laporan:
@@ -243,14 +251,12 @@ def lihatKeluhan_penyewa():
 
     print(f"Ditemukan {len(semua_laporan)} laporan keluhan:\n")
     for i, laporan in enumerate(semua_laporan, start=1):
-        print(f"[{i}] ID Laporan : {laporan['id_laporan']}")
-        print(f"    Dari        : {laporan['nama']} ({laporan['id_penyewa']})")
-        print(f"    Kamar       : {laporan['kamar']}")
-        print(f"    Kategori    : {laporan['kategori']}")
-        print(f"    Judul       : {laporan['judul_laporan']}")
-        print(f"    Status      : {laporan['status']}")
-        print(f"    Tanggal     : {laporan['tanggal_dibuat']}")
-        print("    Deskripsi   :")
+        print(f"[{i}] {laporan['nama']} - {laporan['judul_laporan']}")
+        print(f"    Kamar    : {laporan['kamar']}")
+        print(f"    Kategori : {laporan['kategori']}")
+        print(f"    Status   : {laporan['status']}")
+        print(f"    Tanggal  : {laporan['tanggal_dibuat']}")
+        print("    Deskripsi:")
         print(f"      {laporan['deskripsi_laporan']}")
         print("-" * 60)
 
@@ -280,7 +286,7 @@ def lihatKeluhan_penyewa():
                     else:
                         print("\nPerubahan dibatalkan.")
                 else:
-                    print("\nℹKeluhan ini sudah ditangani.")
+                    print("\nKeluhan ini sudah ditangani.")
         except ValueError:
             print("\nInput harus berupa angka!")
     
@@ -291,127 +297,77 @@ def editStatus():
     print("UBAH STATUS TAGIHAN PENYEWA")
     print("=" * 60)
 
-    penyewa_dengan_tagihan = {}
+    # Kumpulkan penyewa yang punya tagihan
+    daftar_penyewa = []
     for user_id, data in dataUser.items():
         if data["akun"]["role"] == "MEMBER" and data["tagihan"]:
-            penyewa_dengan_tagihan[user_id] = data
+            nama = data["akun"]["nama"]
+            daftar_penyewa.append((user_id, nama))
 
-    if not penyewa_dengan_tagihan:
+    if not daftar_penyewa:
         print("Belum ada penyewa dengan tagihan.")
         input("Tekan Enter untuk kembali...")
         return
 
+    # Tampilkan daftar penyewa (hanya nama)
     print("Daftar Penyewa:")
-    for user_id in penyewa_dengan_tagihan:
-        nama = penyewa_dengan_tagihan[user_id]["akun"]["nama"]
-        print(f"- {user_id} ({nama})")
+    for i, (user_id, nama) in enumerate(daftar_penyewa, start=1):
+        print(f"{i}. {nama}")
 
     print()
-    user_id_pilih = input("Masukkan ID Penyewa (contoh: PENYEWA1): ").strip()
-    if not user_id_pilih or user_id_pilih not in penyewa_dengan_tagihan:
-        print("ID Penyewa tidak valid!")
+    pilih_penyewa = input("Pilih nomor penyewa: ").strip()
+    
+    # Validasi pilihan penyewa
+    try:
+        nomor_penyewa = int(pilih_penyewa)
+        if nomor_penyewa < 1 or nomor_penyewa > len(daftar_penyewa):
+            raise ValueError
+        user_id_pilih, nama_pilih = daftar_penyewa[nomor_penyewa - 1]
+    except ValueError:
+        print("Nomor penyewa tidak valid!")
         input("Tekan Enter untuk kembali...")
         return
 
-    tagihan_dict = penyewa_dengan_tagihan[user_id_pilih]["tagihan"]
-    print(f"\nTagihan untuk {user_id_pilih}:")
-    daftar_periode = []
-    for id_tag, data in tagihan_dict.items():
+    # Ambil tagihan penyewa
+    tagihan_dict = dataUser[user_id_pilih]["tagihan"]
+    daftar_tagihan = list(tagihan_dict.items())  # [(id_tag, data), ...]
+
+    # Tampilkan daftar tagihan
+    print(f"\nTagihan untuk {nama_pilih}:")
+    for i, (id_tag, data) in enumerate(daftar_tagihan, start=1):
         periode = f"{data['bulan']} {data['tahun']}"
-        daftar_periode.append(periode)
-        print(f"- {id_tag} | {periode} | Rp{data['jumlah']:,} | {data['status']}")
+        print(f"{i}. {periode} | Rp{data['jumlah']:,} | {data['status']}")
 
-    print("\nMasukkan periode persis seperti di atas (contoh: November 2025)")
-    input_periode = input("Periode: ").strip()
-    if not input_periode or input_periode not in daftar_periode:
-        print("Periode tidak valid!")
+    print()
+    pilih_tagihan = input("Pilih nomor tagihan yang ingin diubah: ").strip()
+
+    # Validasi pilihan tagihan
+    try:
+        nomor_tagihan = int(pilih_tagihan)
+        if nomor_tagihan < 1 or nomor_tagihan > len(daftar_tagihan):
+            raise ValueError
+        id_tag_target, data_tag_target = daftar_tagihan[nomor_tagihan - 1]
+    except ValueError:
+        print("Nomor tagihan tidak valid!")
         input("Tekan Enter untuk kembali...")
         return
 
-    # Cari id tagihan
-    id_target = next(
-        id_tag for id_tag, data in tagihan_dict.items()
-        if f"{data['bulan']} {data['tahun']}" == input_periode
-    )
-    tagihan_sekarang = tagihan_dict[id_target]
-
-    if tagihan_sekarang["status"] == "SUDAH BAYAR":
+    # Cek apakah sudah lunas
+    if data_tag_target["status"] == "SUDAH BAYAR":
         print("Tagihan ini sudah lunas!")
         input("Tekan Enter untuk kembali...")
         return
 
-    # konfirmasi
-    while True:
-        konfirmasi = input("Ubah status menjadi 'SUDAH BAYAR'? (y/n): ").strip().lower()
-        if konfirmasi == "y":
-            tagihan_sekarang["status"] = "SUDAH BAYAR"
-            print(f"\nBerhasil! Status '{input_periode}' diubah menjadi 'SUDAH BAYAR'.")
-            break
-        elif konfirmasi == "n":
-            print("\nPerubahan dibatalkan.")
-            break
-        else:
-            print("Input tidak valid. Ketik 'y' (ya) atau 'n' (tidak).")
+    # Konfirmasi perubahan
+    periode_tampil = f"{data_tag_target['bulan']} {data_tag_target['tahun']}"
+    print(f"\nAnda akan mengubah status tagihan '{periode_tampil}' menjadi 'SUDAH BAYAR'.")
+    konfirmasi = input("Lanjutkan? (y/n): ").strip().lower()
     
-    input("\nTekan Enter untuk kembali...")
-
-def cetakLaporan():
-    clear()
-    print("CETAK LAPORAN KEUANGAN")
-    print("=" * 70)
-
-    # daftar penyewa aktif
-    print("\n1. DAFTAR PENYEWA AKTIF")
-    print("-" * 50)
-    penyewa_aktif = 0
-    for user_id, data in dataUser.items():
-        if data["akun"]["role"] == "MEMBER":
-            if data["akun"].get("status") == "AKTIF":
-                nama = data["akun"]["nama"]
-                kamar = data["akun"]["kamar"]
-                tgl_gabung = data["akun"].get("tanggal_gabung", "–")
-                print(f"• {nama} | Kamar: {kamar} | Sejak: {tgl_gabung}")
-                penyewa_aktif += 1
-
-    if penyewa_aktif == 0:
-        print("– Tidak ada penyewa aktif.")
-
-    # tagihan yang belum lunas
-    print("\n2. TAGIHAN BELUM LUNAS")
-    print("-" * 50)
-    tagihan_belum_lunas = 0
-    for user_id, data in dataUser.items():
-        if data["akun"]["role"] == "MEMBER":
-            nama = data["akun"]["nama"]
-            for id_tagihan, tag in data["tagihan"].items():
-                if tag["status"] == "BELUM BAYAR":
-                    periode = f"{tag['bulan']} {tag['tahun']}"
-                    print(f"• {nama} ({user_id}) | {periode} | Rp{tag['jumlah']:,}")
-                    tagihan_belum_lunas += 1
-
-    if tagihan_belum_lunas == 0:
-        print("– Semua tagihan telah lunas.")
-
-    # laporan keluhan yang belum ditangani
-    print("\n3. LAPORAN KELUHAN BELUM DITANGANI")
-    print("-" * 50)
-    keluhan_terbuka = 0
-    for user_id, data in dataUser.items():
-        if data["akun"]["role"] == "MEMBER":
-            nama = data["akun"]["nama"]
-            for id_laporan, laporan in data["laporan_keluhan"].items():
-                if laporan["status"] == "BELUM DITANGANI":
-                    print(f"• [{id_laporan}] {nama} | {laporan['judul_laporan']}")
-                    print(f"  Kategori: {laporan['kategori']} | Tgl: {laporan['tanggal_dibuat']}")
-                    keluhan_terbuka += 1
-
-    if keluhan_terbuka == 0:
-        print("– Tidak ada keluhan yang perlu ditangani.")
-
-    print("\n" + "=" * 70)
-    print("Laporan ini dicetak secara otomatis oleh sistem.")
-    print(f"Tanggal: Kamis, 27 November 2025")  # pakai datetime?
-    print("=" * 70)
+    if konfirmasi == "y":
+        dataUser[user_id_pilih]["tagihan"][id_tag_target]["status"] = "SUDAH BAYAR"
+        print(f"\nStatus berhasil diubah menjadi 'SUDAH BAYAR'.")
+    else:
+        print("\nPerubahan dibatalkan.")
 
     input("\nTekan Enter untuk kembali...")
 
@@ -426,7 +382,6 @@ def operasional():
         print("[3] - Lihat Tagihan Yang Belum Lunas")
         print("[4] - Lihat Keluhan dari Penyewa")
         print("[5] - Edit status pembayaran penyewa")
-        print("[6] - Cetak Laporan Keuangan")
         print("[0] - Kembali ke Menu Sebelumnya")
         pilih = input("> ").strip()
 
@@ -442,8 +397,6 @@ def operasional():
             lihatKeluhan_penyewa()
         elif pilih == "5":
             editStatus()
-        elif pilih == "6":
-            cetakLaporan()
         else:
             print("Pilihan Tidak Valid")
             input("Tekan Enter Untuk Kembali...")
