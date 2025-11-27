@@ -375,7 +375,7 @@ def operasional():
     while True:
         clear() 
         print("=" * 75)
-        print("OPERASIONAL KOS & KONTRAKAN")
+        print("OPERASIONAL KOS")
         print("=" * 75)
         print("[1] - Buat Tagihan Bulanan")
         print("[2] - Lihat Berapa Kamar Yang Kosong")
