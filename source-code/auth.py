@@ -1,46 +1,58 @@
-import fungsi
 from akun import dataPenyewa
-
 from fungsi.utilitas import clear
 
+# === VARIABEL GLOBAL UNTUK MENYIMPAN SESI LOGIN ===
 user_login = None
+role_login = None
+id_login = None
+login_password = None
+nama_login = None
+
 
 def login():
-    while True: 
+    while True:
         global user_login, role_login, id_login, login_password, nama_login
-        berhasil_login = False
         clear()
         print("=== LOGIN ===")
         username = input("Username: ").strip()
         password = input("Password: ").strip()
 
-        for id_penyewa, info_penyewa in dataPenyewa.items(): 
-            if username == info_penyewa['username'] and password == info_penyewa['password']: 
+        # Cari akun berdasarkan username dan password
+        for user_id, data_akun in dataPenyewa.items():
+            if (
+                data_akun.get("username") == username
+                and data_akun.get("password") == password
+            ):
+                # Simpan data sesi
                 user_login = username
                 login_password = password
-                role_login = info_penyewa['role']
-                id_login = id_penyewa
-                berhasil_login = True
-                nama_login = info_penyewa['nama']
+                role_login = data_akun["role"]
+                id_login = user_id
 
-                print("Login Berhasil")
+                # Ambil nama hanya jika penyewa
+                if data_akun["role"] == "MEMBER":
+                    nama_login = data_akun["nama"]
+                else:
+                    nama_login = "Admin"
 
-        if berhasil_login == True: 
-            break
-        else: 
-            print("Login gagal, silahkan coba lagi!")
+                print("\nLogin berhasil!")
+                input("Tekan Enter untuk melanjutkan...")
+                clear()
+                return True  # Keluar dari fungsi
 
-    print("Data penyewa berhasil ditambahkan!")
-    print(f"ID Penyewa: {id_penyewa}")
+        # Jika tidak ditemukan
+        print("\nUsername atau password salah!")
+        input("Tekan Enter untuk mengulang...")
+        clear()
 
-    # user[username] = password
-    print("Akun berhasil dibuat! Silakan login.")
 
-    clear()
-    return True
-
-#ini biarin aja kah fitur logout nya dipisah atau nanti mau di gabung di function lain?
 def logout():
-    global user_login
+    global user_login, role_login, id_login, login_password, nama_login
     user_login = None
-    print("Berhasil logout.")
+    role_login = None
+    id_login = None
+    login_password = None
+    nama_login = None
+    print("\n✅ Berhasil logout.")
+    input("Tekan Enter untuk kembali...")
+    clear()

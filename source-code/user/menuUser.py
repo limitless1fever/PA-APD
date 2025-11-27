@@ -19,10 +19,6 @@ def menuUser():
             print(f"Selamat datang kembali : {auth.nama_login}")
             print("=" * 75)
 
-            print(f"Sekarang Bulan : {tagihan[auth.id_login]['TGHN01']['bulan']} {tagihan[auth.id_login]['TGHN01']['tahun']}")
-            print(f"Status Kos : {tagihan[auth.id_login]['TGHN01']['status']}")
-            print("=" * 75) 
-
             print("[1] - Manajemen Pembayaran & Tagihan")
             print("[2] - Layanan & Keluhan Fasilitas")
             print("[3] - Pengelolaan Akun & Data Pribadi")

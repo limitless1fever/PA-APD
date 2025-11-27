@@ -10,7 +10,7 @@ while True:
         clear()
 
         print("=" * 75)
-        print("SISTEM MANAJEMEN KOS DAN KONTRAKAN")
+        print("SISTEM MANAJEMEN KOS")
         print("=" * 75)
 
         print("[1] - Login")
