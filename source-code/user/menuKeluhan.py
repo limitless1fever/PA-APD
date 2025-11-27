@@ -50,7 +50,12 @@ def buat_laporan_keluhan():
     print()
 
     tanggal_laporan = input("Masukkan Tanggal dibuat (contoh: 27 November 2025): ").strip()
-    print()
+    if not tanggal_laporan:
+        print("Tanggal tidak boleh kosong!")
+    else:
+        print("Berhasil Diinput")
+        input("Tekan Enter untuk lanjut...")
+        clear()
 
     print("KATEGORI LAPORAN")
     print("[1] Fasilitas Rusak")
