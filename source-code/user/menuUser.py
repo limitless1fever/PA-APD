@@ -1,5 +1,7 @@
 import fungsi
 import user
+import auth
+from akun import dataPenyewa, tagihan
 
 from fungsi.utilitas import clear
 
@@ -14,8 +16,12 @@ def menuUser():
             clear()
 
             print("=" * 75)
-            print("Selamat datang kembali, 'nama_user'")
+            print(f"Selamat datang kembali : {auth.nama_login}")
             print("=" * 75)
+
+            print(f"Sekarang Bulan : {tagihan[auth.id_login]['TGHN01']['bulan']} {tagihan[auth.id_login]['TGHN01']['tahun']}")
+            print(f"Status Kos : {tagihan[auth.id_login]['TGHN01']['status']}")
+            print("=" * 75) 
 
             print("[1] - Manajemen Pembayaran & Tagihan")
             print("[2] - Layanan & Keluhan Fasilitas")
@@ -40,11 +46,11 @@ def menuUser():
 
             elif pilih_menu == "2": 
                 clear()
-                kelolaAkun()
+                keluhan()
 
             elif pilih_menu == "3": 
                 clear()
-                keluhan()
+                kelolaAkun()        
                 
             else: 
                 raise ValueError("Pilihan Tidak Valid")

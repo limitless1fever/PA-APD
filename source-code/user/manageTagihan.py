@@ -326,41 +326,6 @@ def riwayat_pembayaran():
         input("Tekan ENTER untuk melanjutkan")
         break
 
-
-        # clear()
-        # print(f"{'ID Penyewa':<15} {'Nama Lengkap':<25} {'Kontak':<15} {'Tanggal Gabung':<20} {'Status':<15} {'Unit':<10} {'Kamar':<10}")
-        # for id_penyewa, data in dataPenyewa.items(): 
-        #         print(f"{str(id_penyewa):<15} {data['nama']:<25} {data['kontak']:<15} {data['tanggal_gabung']:<20} {data['status']:<15} {data['unit']:<10} {data['kamar']:<10}")
-
-        # print("=" * 75)
-        # print(f"{'0':<15} Keluar")
-        # print("=" * 75)
-
-        # input_id = input("Masukkan ID : ")
-        # clear()
-
-        # if input_id == "0": 
-        #     break
-        # for id_penyewa, info_penyewa in dataPenyewa.items(): 
-        #     if input_id == id_penyewa:
-        #         print("=" * 75)
-        #         print("TAGIHAN YANG AKAN DATANG")
-        #         print("=" * 75)
-                
-        #         # ini buat dibuat kayak struk kebawah atau tetap ke samping kasih tau aja
-        #         ada_tagihan = False
-        #         for id_penyewa, data_penyewa in tagihan.items(): 
-        #             if input_id == id_penyewa: 
-        #                 for id_tagihan, data_tagihan in data_penyewa.items():
-        #                     if data_tagihan['status'] == "BAYAR": 
-        #                         print("tahun     :", data_tagihan["tahun"])
-        #                         print("Bulan     :", data_tagihan["bulan"])
-        #                         print("Jumlah    : Rp", data_tagihan["jumlah"])
-        #                         print("Status    :", data_tagihan["status"])
-        #                         print("-" * 75)
-        #                         ada_tagihan = True
-        #     input("Tekan Enter untuk kembali...")
-
 def status_kontrakan():
     clear()
     print("=" * 75)
@@ -417,9 +382,8 @@ def kelolaTagihan():
         print("=" * 75)
         print("[1] - Buat Laporan Konfirmasi Pembayaran")
         print("[2] - Lihat Tagihan yang Akan Datang")
-        print("[3] - Lihat Status Kontrakan")
-        print("[4] - Lihat Riwayat Pembayaran")
-        print("[5] - Hapus Bukti Pembayaran")
+        print("[3] - Lihat Riwayat Pembayaran")
+        print("[4] - Hapus Bukti Pembayaran")
         print("[0] - Kembali ke Menu Sebelumnya")
         print("=" * 75)
 
@@ -432,12 +396,10 @@ def kelolaTagihan():
         elif pilih == "2":
             lihat_tagihan_mendatang()
         elif pilih == "3":
-            status_kontrakan()
-        elif pilih == "4":
             riwayat_pembayaran()
-        elif pilih == "5":
+        elif pilih == "4":
             hapus_bukti_pembayaran()
-        elif pilih == "6": 
+        elif pilih == "5": 
             tampilkan_laporan_konfirmasi()
         else:
             print("Pilihan tidak valid.")
